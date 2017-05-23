@@ -1,0 +1,27 @@
+{
+  "name": "@jrapp/protobuf-parser",
+  "version": "1.0.0",
+  "description": "Parsing multiple protobuf files",
+  "main": "./src/index.js",
+  "scripts": {
+    "test": "./node_modules/.bin/mocha --reporter spec --colors --timeout 10000 --async-only --recursive ./test",
+    "coverage": "./node_modules/istanbul/lib/cli.js cover --config ./test/istanbul.yml ./node_modules/.bin/_mocha -- --recursive ./test --timeout 10000 --async-only --reporter xunit --reporter-options output=./ci/reports/coverage/test.xml",
+    "lint": "./node_modules/.bin/eslint ./src",
+    "test-report": "npm -s run lint && npm -s run test && npm -s run coverage"
+  },
+  "repository": {
+    "type": "git",
+    "url": "ssh://git@github.com:joakimrapp/protobuf-parser.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/joakimrapp/protobuf-parser/issues"
+  },
+  "homepage": "https://github.com/joakimrapp/protobuf-parser#readme",
+  "devDependencies": {
+    "@jrapp/node-project-setup": "*"
+  },
+  "dependencies": {
+  }
+}
