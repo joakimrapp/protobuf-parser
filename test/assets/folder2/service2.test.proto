@@ -1,0 +1,15 @@
+package test;
+syntax = "proto3";
+
+message RequestMessage2 {
+	string input = 1;
+}
+message ResponseMessage2 {
+	string output = 1;
+}
+
+service Service2 {
+	rpc Method2 ( RequestMessage2 ) returns ( ResponseMessage2 ) {
+
+	}
+}
