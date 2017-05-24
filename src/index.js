@@ -26,7 +26,7 @@ class ProtoParser {
 	} } ); }
 	get promise() { return ( this.context.promise = ( this.context.promise || Promise.resolve() ) ); }
 	set promise( value ) { this.context.promise = value; }
-	json( ...args ) { this.promise = this.promise.then( root => root.toJSON() ).then( ...args ); return this; }
+	json( ...args ) { this.promise = this.promise.then( root => root.toJSON().nested ).then( ...args ); return this; }
 	get add() { return {
 		path: ( scanpath = '.' ) => {
 			const absolutepath = getAbsolutePath( scanpath );
