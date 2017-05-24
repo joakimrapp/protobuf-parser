@@ -15,16 +15,32 @@ class ProtoParser {
 		Array.isArray( reflectionObject.nestedArray ) ? Array.prototype.concat( ...reflectionObject.nestedArray.map( ProtoParser.getMethodsRecursive ) ) :
 	 	[];
 	}
-	constructor() { return Object.assign( this, { promise: Promise.resolve(), root: new modules.protobufjs.Root() } ); }
+	constructor() {
+		const importpaths = [];
+		Object.assign( this, {
+			promise: Promise.resolve(),
+			root: Object.assign( new modules.protobufjs.Root(), { resolvePath: ( origin, target ) => {
+				if( origin ) {
+					target = target.replace( /\\/g, '/' );
+					return path.resolve( importpaths.find( ( { prefix, basepath } ) => target.indexOf( prefix ) === 0 ).basepath, target );
+				}
+				else
+					return target;
+			} } ),
+			importpaths
+		} );
+		this.add.importpath( path.dirname( require.resolve( 'protobufjs' ) ), 'google/' );
+	}
 	get add() { return {
+		importpath: ( scanpath, prefix ) => {
+			const absolutepath = path.normalize( path.isAbsolute( scanpath ) ? scanpath : path.resolve( path.dirname( modules.stacktrace.get()[ 1 ].getFileName() ), scanpath ) );
+			this.importpaths.unshift( { prefix, basepath: absolutepath } );
+			return this;
+		},
 		path: ( scanpath = '.' ) => {
 			const absolutepath = path.normalize( path.isAbsolute( scanpath ) ? scanpath : path.resolve( path.dirname( modules.stacktrace.get()[ 1 ].getFileName() ), scanpath ) );
-			const basepath = path.dirname( absolutepath );
-			this.promise = this.promise
-				.then( () => modules.files( absolutepath, '*.proto' ) )
-				.then( absolutepaths => absolutepaths.map( absolutepath => absolutepath.slice( basepath.length + 1 ) ) )
-				.then( relativepaths => Object.assign( this.root, { resolvePath: ( origin, target ) =>
-					path.resolve( target.indexOf( 'google' ) === 0 ? path.resolve( path.dirname( require.resolve( 'protobufjs' ) ) ) : basepath, target ) } ).load( relativepaths ) );
+			this.add.importpath( path.dirname( absolutepath ), `${path.basename( absolutepath )}/` );
+			this.promise = this.promise.then( () => modules.files( absolutepath, '*.proto' ) ).then( this.root.load.bind( this.root ) );
 			return this;
 		},
 		json: ( json ) =>  {
