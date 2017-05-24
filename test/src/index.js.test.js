@@ -16,4 +16,7 @@ require( '@jrapp/node-project-setup' ).testing.file( './test' )( ( index ) => {}
 	 	.catch( () => resolve() ) ) )
 	.it( 'should output json', ( assert, index ) => index().add.path( '../assets/ok' )
 		.json( ( json ) => assert.ok( json ) ) )
+	.it( 'should get methods', ( assert, index ) => index()
+		.add.path( '../assets/ok' )
+		.methods( methods => assert.equal( methods.length, 2 ) ) )
 	.done();
