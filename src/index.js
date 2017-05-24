@@ -22,7 +22,8 @@ class ProtoParser {
 			root: Object.assign( new modules.protobufjs.Root(), { resolvePath: ( origin, target ) => {
 				if( origin ) {
 					target = target.replace( /\\/g, '/' );
-					return path.resolve( importpaths.find( ( { prefix, basepath } ) => target.indexOf( prefix ) === 0 ).basepath, target );
+					const item = importpaths.find( ( { prefix, absolutepath } ) => target.indexOf( prefix ) === 0 );
+					return path.resolve( item ? item.absolutepath : path.dirname( origin ), target );
 				}
 				else
 					return target;
@@ -34,7 +35,7 @@ class ProtoParser {
 	get add() { return {
 		importpath: ( scanpath, prefix ) => {
 			const absolutepath = path.normalize( path.isAbsolute( scanpath ) ? scanpath : path.resolve( path.dirname( modules.stacktrace.get()[ 1 ].getFileName() ), scanpath ) );
-			this.importpaths.unshift( prefix ? { prefix, absolutepath } : { prefix: `${path.basename( absolutepath )}/`, basepath: path.dirname( absolutepath ) } );
+			this.importpaths.unshift( prefix ? { prefix, absolutepath } : { prefix: `${path.basename( absolutepath )}/`, absolutepath: path.dirname( absolutepath ) } );
 			return this;
 		},
 		path: ( scanpath = '.' ) => {

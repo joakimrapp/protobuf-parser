@@ -19,4 +19,12 @@ require( '@jrapp/node-project-setup' ).testing.file( './test' )( ( index ) => {}
 	.it( 'should get methods', ( assert, index ) => index()
 		.add.path( '../assets/ok' )
 		.methods( methods => assert.equal( methods.length, 2 ) ) )
+	.it( 'should import a depending path', ( assert, index ) => index()
+		.add.importpath( '../assets/ok' )
+		.add.path( '../assets/depending' )
+		.methods( methods => assert.equal( methods.length, 4 ) ) )
+	.it( 'should import a depending path with prefix', ( assert, index ) => index()
+		.add.importpath( '../assets', 'ok/' )
+		.add.path( '../assets/depending' )
+		.methods( methods => assert.equal( methods.length, 4 ) ) )
 	.done();

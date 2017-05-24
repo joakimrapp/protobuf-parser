@@ -1,0 +1,9 @@
+import "../ok/folder1/service1.test.proto";
+package test;
+syntax = "proto3";
+
+service Service3 {
+	rpc Method1 ( RequestMessage1 ) returns ( ResponseMessage1 ) {
+
+	}
+}
