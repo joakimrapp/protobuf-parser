@@ -1,6 +1,6 @@
 {
   "name": "@jrapp/protobuf-parser",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "Parsing multiple protobuf files",
   "main": "./src/index.js",
   "scripts": {
