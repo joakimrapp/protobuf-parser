@@ -29,18 +29,17 @@ class ProtoParser {
 			} } ),
 			importpaths
 		} );
-		this.add.importpath( path.dirname( require.resolve( 'protobufjs' ) ), 'google/' );
+		this.add.importpath( path.resolve( path.dirname( require.resolve( 'protobufjs' ) ), 'google' ) );
 	}
 	get add() { return {
 		importpath: ( scanpath, prefix ) => {
 			const absolutepath = path.normalize( path.isAbsolute( scanpath ) ? scanpath : path.resolve( path.dirname( modules.stacktrace.get()[ 1 ].getFileName() ), scanpath ) );
-			this.importpaths.unshift( { prefix, basepath: absolutepath } );
+			this.importpaths.unshift( prefix ? { prefix, absolutepath } : { prefix: `${path.basename( absolutepath )}/`, basepath: path.dirname( absolutepath ) } );
 			return this;
 		},
 		path: ( scanpath = '.' ) => {
 			const absolutepath = path.normalize( path.isAbsolute( scanpath ) ? scanpath : path.resolve( path.dirname( modules.stacktrace.get()[ 1 ].getFileName() ), scanpath ) );
-			this.add.importpath( path.dirname( absolutepath ), `${path.basename( absolutepath )}/` );
-			this.promise = this.promise.then( () => modules.files( absolutepath, '*.proto' ) ).then( this.root.load.bind( this.root ) );
+			this.add.importpath( absolutepath ).promise = this.promise.then( () => modules.files( absolutepath, '*.proto' ) ).then( this.root.load.bind( this.root ) );
 			return this;
 		},
 		json: ( json ) =>  {
